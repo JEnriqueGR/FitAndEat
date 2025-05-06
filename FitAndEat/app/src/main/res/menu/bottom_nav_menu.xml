@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_exercises"
+        android:title="Ejercicios"
+        android:icon="@drawable/ic_book"/>
+    <item android:id="@+id/nav_timer"
+        android:title="Cronómetro"
+        android:icon="@drawable/ic_timer"/>
+    <item android:id="@+id/nav_routine"
+        android:title="Rutina"
+        android:icon="@drawable/ic_add"/>
+    <item android:id="@+id/nav_food"
+        android:title="Food"
+        android:icon="@drawable/ic_food"/>
+    <item android:id="@+id/nav_stats"
+        android:title="Estadísticas"
+        android:icon="@drawable/ic_stats"/>
+    <!--
+    <item android:id="@+id/nav_profile"
+        android:title="Usuario"
+        android:icon="@drawable/ic_user"/>
+       -->
+</menu>

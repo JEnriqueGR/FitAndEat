@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="#FFFFFF">
+
+    <!-- Texto principal de cuenta regresiva -->
+    <TextView
+        android:id="@+id/tvCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Número de ciclos realizados -->
+    <TextView
+        android:id="@+id/tvCycleCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ciclos realizados: 0"
+        android:textSize="18sp"
+        android:textColor="#4E7EFF"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Botón grande para iniciar/pausar -->
+    <Button
+        android:id="@+id/btnStartPause"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Iniciar"
+        android:backgroundTint="#4E7EFF"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Fila para configuración de descanso y número de ciclos -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
+
+        <!-- Botón para configurar descanso -->
+        <Button
+            android:id="@+id/btnConfigurarDescanso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configurar Descanso"
+            android:backgroundTint="#00C853"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- Input para número de series -->
+        <EditText
+            android:id="@+id/etSeries"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:hint="Series"
+            android:inputType="number"
+            android:background="@android:drawable/edit_text"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <!-- Botón para reiniciar todo -->
+    <Button
+        android:id="@+id/btnReset"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Reiniciar"
+        android:backgroundTint="#FF5252"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>
