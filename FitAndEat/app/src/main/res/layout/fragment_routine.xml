@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:paddingBottom="80dp"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp">
 
         <TextView
             android:text="Entrenar"
@@ -15,7 +19,8 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#000000" />
 
         <TextView
             android:text="Inicio rápido"
@@ -25,66 +30,38 @@
 
         <Button
             android:id="@+id/btnStartEmptyWorkout"
-            android:text="Iniciar un entrenamiento vacío"
+            android:text="Iniciar un entrenamiento"
             android:layout_marginVertical="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- Rutinas guardadas -->
+        <!-- Entrenamientos guardados dinámicos -->
         <TextView
-            android:text="Rutinas guardadas"
+            android:text="Entrenamientos guardados"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="24dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#000000" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerSavedTrainings"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="285dp"
+            android:layout_marginTop="20dp"
+            android:nestedScrollingEnabled="true" />
 
-            <!-- Rutina 1 -->
-            <LinearLayout
-                android:orientation="vertical"
-                android:padding="12dp"
-                android:background="@drawable/card_background"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:text="Push"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:text="Lateral Raise (Machine), Lateral Raise (Cable)..."
-                    android:textSize="12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- Agregar nueva -->
-            <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="12dp"
-                android:background="@drawable/card_background"
-                android:layout_marginStart="8dp"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:text="+"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </LinearLayout>
+        <!-- Texto de rutinas no guardadas -->
+        <TextView
+            android:id="@+id/tvEmptyListMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No tienes entrenamientos guardados"
+            android:textColor="#757575"
+            android:gravity="center"
+            android:padding="16dp"
+            android:visibility="gone" />
 
         <!-- Rutinas sugeridas -->
         <TextView
@@ -93,9 +70,9 @@
             android:textStyle="bold"
             android:layout_marginTop="24dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#000000" />
 
-        <!-- Copias simples como sugerencias -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_marginTop="8dp"
@@ -123,11 +100,11 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <!-- Otra sugerida -->
             <LinearLayout
                 android:orientation="vertical"
                 android:padding="12dp"
                 android:background="@drawable/card_background"
+                android:layout_marginBottom="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -142,14 +119,21 @@
                     android:textSize="12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-
-
             </LinearLayout>
+
             <Button
                 android:id="@+id/btnNuevaRutina"
-                android:text="Registrar Sesión de Entrnamiento"
+                android:layout_marginTop="15dp"
+                android:text="Registrar Sesión de Entrenamiento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="60dp" />
+
         </LinearLayout>
+
     </LinearLayout>
-</ScrollView>
+
+</androidx.core.widget.NestedScrollView>

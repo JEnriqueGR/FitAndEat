@@ -2,6 +2,7 @@ package com.example.fitandeat
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
@@ -12,20 +13,27 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.example.fitandeat.databinding.FragmentTrainingModalBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
-import com.example.fitandeat.R
-
+import com.google.gson.Gson
 
 class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
@@ -38,15 +46,13 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
     private var timeElapsed: Long = 0
     private var running: Boolean = false
 
-    // Variables para el temporizador de serie
-    private var countdownHandler: Handler? = null
-    private var countdownRunnable: Runnable? = null
-    private var isCountdownRunning = false
-
     // Variables de series para guardar entrenamientos en bd
     private val seriesTemporales = mutableListOf<Serie>()
 
+    // Variable para el dobleclick del titulo del entrenamiento
+    private var lastClickTime = 0L
 
+    private var newTraining = true
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
@@ -59,11 +65,32 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
         binding.layoutDetalleEjercicio.isVisible = false
         binding.swipeContainer.isVisible = false
 
-        // Actualiza el texto del entrenamiento y la fecha cuando el BottomSheet es creado
-        updateTrainingInfo()
-
         // Inicializamos el cronómetro
         startChronometer()
+
+        val entrenamientoJson = arguments?.getString("entrenamientoJson")
+
+        if (entrenamientoJson != null) {
+            // Carga un entrenamiento ya guardado
+            newTraining = false
+            val entrenamiento = Gson().fromJson(entrenamientoJson, Entrenamiento::class.java)
+            binding.etTituloEntrenamiento.setText(entrenamiento.nombreEntrenamiento)
+            binding.tvNombreEjercicio.text = entrenamiento.series.firstOrNull()?.nombreEjercicio ?: "Sin ejercicio"
+
+            binding.layoutDetalleEjercicio.isVisible = true
+            binding.swipeContainer.isVisible = true
+            binding.btnAnEjercicio.isVisible = false
+
+            entrenamiento.series.forEach { serie ->
+                showSeries(serie)
+                seriesTemporales.add(serie)
+            }
+
+        } else {
+            // Se crea nuevo entrenamiento
+            newTraining = true
+            updateTrainingInfo() // ya tienes esta función
+        }
 
         binding.root.post {
             val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
@@ -94,7 +121,7 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
                         if (!isAdded || view == null) return
 
-                        val paramsTitulo = binding.tvTituloEntrenamiento.layoutParams as ViewGroup.MarginLayoutParams
+                        val paramsTitulo = binding.etTituloEntrenamiento.layoutParams as ViewGroup.MarginLayoutParams
                         val paramsDuracion = binding.tvDuracion.layoutParams as ViewGroup.MarginLayoutParams
 
                         if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
@@ -103,20 +130,20 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
                             // Ocultar elementos
                             binding.btnTerminar.isVisible = false
-                            binding.btnAnEjercicio.isVisible = false
+                            binding.btnAnEjercicio.isVisible = newTraining
                             binding.btnCancelarEntrenamiento.isVisible = false
                             binding.tvFecha.isVisible = false
 
                             // Centrar título y duración
-                            binding.tvTituloEntrenamiento.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                            binding.etTituloEntrenamiento.textAlignment = View.TEXT_ALIGNMENT_CENTER
                             binding.tvDuracion.textAlignment = View.TEXT_ALIGNMENT_CENTER
-                            binding.tvTituloEntrenamiento.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                            binding.etTituloEntrenamiento.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                             binding.tvDuracion.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                             paramsTitulo.marginStart = 0
                             paramsTitulo.marginEnd = 0
                             paramsDuracion.marginStart = 0
                             paramsDuracion.marginEnd = 0
-                            binding.tvTituloEntrenamiento.layoutParams = paramsTitulo
+                            binding.etTituloEntrenamiento.layoutParams = paramsTitulo
                             binding.tvDuracion.layoutParams = paramsDuracion
 
                         } else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
@@ -125,20 +152,20 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
                             // Mostrar elementos
                             binding.btnTerminar.isVisible = true
-                            binding.btnAnEjercicio.isVisible = true
+                            binding.btnAnEjercicio.isVisible = newTraining
                             binding.btnCancelarEntrenamiento.isVisible = true
                             binding.tvFecha.isVisible = true
 
                             // Alinear texto a la izquierda y restaurar márgenes
-                            binding.tvTituloEntrenamiento.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                            binding.etTituloEntrenamiento.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
                             binding.tvDuracion.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
-                            binding.tvTituloEntrenamiento.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                            binding.etTituloEntrenamiento.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                             binding.tvDuracion.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                             paramsTitulo.marginStart = (16 * density).toInt()
                             paramsDuracion.marginStart = (16 * density).toInt()
                             paramsTitulo.marginEnd = 0
                             paramsDuracion.marginEnd = 0
-                            binding.tvTituloEntrenamiento.layoutParams = paramsTitulo
+                            binding.etTituloEntrenamiento.layoutParams = paramsTitulo
                             binding.tvDuracion.layoutParams = paramsDuracion
                         }
                     }
@@ -147,7 +174,7 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
                         if (!isAdded || view == null) return
 
-                        val paramsTitulo = binding.tvTituloEntrenamiento.layoutParams as ViewGroup.MarginLayoutParams
+                        val paramsTitulo = binding.etTituloEntrenamiento.layoutParams as ViewGroup.MarginLayoutParams
                         val paramsDuracion = binding.tvDuracion.layoutParams as ViewGroup.MarginLayoutParams
 
                         // La opacidad base
@@ -161,7 +188,7 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
                             // Segundo botón: btnAnEjercicio
                             binding.btnAnEjercicio.alpha = alpha * 0.4f
-                            binding.btnAnEjercicio.isVisible = alpha > 0.2f
+                            binding.btnAnEjercicio.isVisible = newTraining
 
                             // Tercer botón: btnCancelarEntrenamiento
                             binding.btnCancelarEntrenamiento.alpha = alpha * 0.4f
@@ -178,7 +205,7 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
                             // Segundo botón: btnAnEjercicio
                             binding.btnAnEjercicio.alpha = alpha * 0.8f
-                            binding.btnAnEjercicio.isVisible = true
+                            binding.btnAnEjercicio.isVisible = newTraining
 
                             // Tercer botón: btnCancelarEntrenamiento
                             binding.btnCancelarEntrenamiento.alpha = alpha * 0.8f
@@ -194,7 +221,7 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
                             binding.btnTerminar.isVisible = true
 
                             binding.btnAnEjercicio.alpha = 1f
-                            binding.btnAnEjercicio.isVisible = true
+                            binding.btnAnEjercicio.isVisible = newTraining
 
                             binding.btnCancelarEntrenamiento.alpha = 1f
                             binding.btnCancelarEntrenamiento.isVisible = true
@@ -212,9 +239,9 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
                             paramsDuracion.marginEnd = 0
                         } else if (slideOffset < 0.25f) {
                             // Cuando se ha deslizado menos de la mitad, centramos los textos
-                            binding.tvTituloEntrenamiento.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                            binding.etTituloEntrenamiento.textAlignment = View.TEXT_ALIGNMENT_CENTER
                             binding.tvDuracion.textAlignment = View.TEXT_ALIGNMENT_CENTER
-                            binding.tvTituloEntrenamiento.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                            binding.etTituloEntrenamiento.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                             binding.tvDuracion.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                             paramsTitulo.marginStart = 0
                             paramsTitulo.marginEnd = 0
@@ -222,9 +249,9 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
                             paramsDuracion.marginEnd = 0
                         } else {
                             // Restaurar márgenes originales cuando está más de la mitad
-                            binding.tvTituloEntrenamiento.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                            binding.etTituloEntrenamiento.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
                             binding.tvDuracion.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
-                            binding.tvTituloEntrenamiento.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                            binding.etTituloEntrenamiento.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                             binding.tvDuracion.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                             paramsTitulo.marginStart = (16 * resources.displayMetrics.density).toInt()
                             paramsDuracion.marginStart = (16 * resources.displayMetrics.density).toInt()
@@ -232,7 +259,7 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
                             paramsDuracion.marginEnd = 0
                         }
 
-                        binding.tvTituloEntrenamiento.layoutParams = paramsTitulo
+                        binding.etTituloEntrenamiento.layoutParams = paramsTitulo
                         binding.tvDuracion.layoutParams = paramsDuracion
                     }
 
@@ -242,6 +269,32 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
         dialog?.window?.setDimAmount(0.4f)
 
+        binding.etTituloEntrenamiento.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime < 500) {
+                enableTitleEdition()
+            }
+            lastClickTime = currentTime
+        }
+
+        binding.etTituloEntrenamiento.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                disableTitleEdition()
+            }
+        }
+
+        binding.nestedScrollView.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                if (binding.etTituloEntrenamiento.isFocused) {
+                    binding.etTituloEntrenamiento.clearFocus()
+
+                    val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.etTituloEntrenamiento.windowToken, 0)
+                }
+            }
+            false
+        }
+
         binding.btnAnEjercicio.setOnClickListener {
             // Crear y mostrar el modal (DialogFragment) para la lista de ejercicios
             val modalFragment = ExerciseListDialogFragment()
@@ -250,9 +303,9 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
                 .commit()
         }
 
-        // Partes del view
-        binding.ivCheck.setOnClickListener {
-            startSerie()
+        binding.btnAddSerie.setOnClickListener {
+            val numeroNuevaSerie = binding.contenedorSeries.childCount + 1
+            addNewSerie(numeroNuevaSerie)
         }
 
         var xStart = 0f
@@ -285,8 +338,9 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
                             .withEndAction {
                                 hideExerciseDetail()
 
-                                //Añadir funcion para limpiar datos de la serie
-                                clearCurrentSerieData()
+                                // Limpiar datos de la serie
+                                binding.contenedorSeries.removeAllViews()
+                                seriesTemporales.clear()
 
                                 binding.btnAnEjercicio.text = getString(R.string.add_ejercicio)
                                 binding.layoutDetalleEjercicio.translationX = 0f
@@ -332,11 +386,46 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
         }
 
         // Establecer el nombre en el TextView
-        binding.tvTituloEntrenamiento.text = trainingName
+        binding.etTituloEntrenamiento.setText(trainingName)
 
         // Obtener la fecha actual y establecerla
         val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
         binding.tvFecha.text = currentDate
+    }
+
+    private fun enableTitleEdition() {
+        binding.etTituloEntrenamiento.apply {
+            isFocusableInTouchMode = true
+            isFocusable = true
+            isCursorVisible = true
+            requestFocus()
+        }
+
+        // Mostrar el teclado
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(binding.etTituloEntrenamiento, InputMethodManager.SHOW_IMPLICIT)
+
+        // Manejar ENTER o focus perdido
+        binding.etTituloEntrenamiento.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                disableTitleEdition()
+                true
+            } else false
+        }
+
+    }
+
+    private fun disableTitleEdition() {
+        binding.etTituloEntrenamiento.apply {
+            isFocusable = false
+            isFocusableInTouchMode = false
+            isCursorVisible = false
+            clearFocus()
+            setTextIsSelectable(false)
+        }
+
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.etTituloEntrenamiento.windowToken, 0)
     }
 
     private fun startChronometer() {
@@ -379,155 +468,243 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
         binding.btnAnEjercicio.text = getString(R.string.cambiar_ejercicio)
     }
 
-    private fun startSerie() {
-        val kgText = binding.etKg.text.toString()
-        val repsText = binding.etReps.text.toString()
-        val nombreEjercicio = binding.tvNombreEjercicio.text.toString()
-
-        // Primero: validamos que no estén vacíos
-        if (kgText.isBlank() || repsText.isBlank()) {
-            Toast.makeText(requireContext(), "Por favor llena kg y reps", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val kg = binding.etKg.text.toString().toFloat()
-        val reps = binding.etReps.text.toString().toInt()
-
-        val nuevaSerie = Serie(
-            numero = seriesTemporales.size + 1,
-            nombreEjercicio = nombreEjercicio,
-            kg = kg,
-            repeticiones = reps,
-            completada = false  // lo marcas como completada cuando termine el tiempo
-        )
-
-        seriesTemporales.add(nuevaSerie)
-
-        if (isCountdownRunning) {
-            // Si ya está corriendo, lo reseteamos
-            countdownHandler?.removeCallbacks(countdownRunnable!!)
-            resetTimerState()
-            return
-        }
-
-        val totalTimeMillis = 2 * 60 * 1000L  // 2 minutos en milisegundos
-        var timeLeft = totalTimeMillis
-
-        // Pintar el fondo verde al arrancar
-        binding.ivCheck.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.greenlist))
-
-        isCountdownRunning = true
-
-        countdownHandler = Handler()
-        countdownRunnable = Runnable {
-            val seconds = (timeLeft / 1000 % 60).toInt()
-            val minutes = (timeLeft / 1000 / 60).toInt()
-            val timeString = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
-            binding.tvTemporizador.text = timeString
-
-            // Cambiar color según tiempo
-            when {
-                timeLeft <= 10 * 1000L -> {
-                    binding.tvTemporizador.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark))
-                }
-                timeLeft <= 45 * 1000L -> {
-                    binding.tvTemporizador.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_orange_dark))
-                }
-                else -> {
-                    binding.tvTemporizador.setTextColor(ContextCompat.getColor(requireContext(), R.color.bblue))
-                }
-            }
-
-            if (timeLeft > 0) {
-                timeLeft -= 1000
-                countdownHandler?.postDelayed(countdownRunnable!!, 1000)
-            } else {
-                // Al terminar, marcar como completada la última serie
-                if (seriesTemporales.isNotEmpty()) {
-                    val ultima = seriesTemporales.last()
-                    val completada = ultima.copy(completada = true)
-                    seriesTemporales[seriesTemporales.lastIndex] = completada
-                }
-                binding.ivCheck.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.greencheck))
-            }
-        }
-
-        countdownHandler?.post(countdownRunnable!!)
-    }
-
-
-    private fun resetTimerState() {
-        isCountdownRunning = false
-        binding.layoutFilaSerie.setBackgroundColor(resources.getColor(android.R.color.darker_gray, null))  // color original
-        binding.ivCheck.setBackgroundColor(0)
-        binding.tvTemporizador.text = getString(R.string.temporizador)
-        binding.tvTemporizador.setTextColor(resources.getColor(R.color.blue, null))
-    }
-
-    private fun clearCurrentSerieData() {
-        // Limpiar los campos de texto
-        binding.etKg.text?.clear()
-        binding.etReps.text?.clear()
-
-        // Reiniciar visuales
-        binding.tvTemporizador.text = getString(R.string.temporizador)
-        binding.tvTemporizador.setTextColor(ContextCompat.getColor(requireContext(), R.color.blue))
-        binding.layoutFilaSerie.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray))
-        binding.ivCheck.setBackgroundColor(0)
-
-        // Opcional: si quieres también eliminar la última serie temporal
-        if (seriesTemporales.isNotEmpty()) {
-            seriesTemporales.removeAt(seriesTemporales.lastIndex)
-        }
-    }
-
-
     private fun hideExerciseDetail() {
         binding.layoutDetalleEjercicio.isVisible = false
         binding.swipeContainer.isVisible = false
         Toast.makeText(requireContext(), "Ejercicio borrado", Toast.LENGTH_SHORT).show()
     }
 
-    private fun cancelTrainingAndClose() {
-        // Detener cronómetro general
-        stopChronometer()
+    // Funcion que muestra las series en el fragment del entrenamiento ya guardo
+    private fun showSeries(serie: Serie) {
+        val nuevaFila = LayoutInflater.from(requireContext())
+            .inflate(R.layout.fila_serie, binding.contenedorSeries, false)
 
-        // Detener temporizador de serie si está corriendo
-        if (isCountdownRunning) {
-            countdownHandler?.removeCallbacks(countdownRunnable!!)
-            isCountdownRunning = false
+        val layoutFilaSerie = nuevaFila.findViewById<LinearLayout>(R.id.layoutFilaSerie)
+        val tvSerieNumero = nuevaFila.findViewById<TextView>(R.id.tvSerieNumero)
+        val etKg = nuevaFila.findViewById<EditText>(R.id.etKg)
+        val etReps = nuevaFila.findViewById<EditText>(R.id.etReps)
+        val ivCheck = nuevaFila.findViewById<ImageView>(R.id.ivCheck)
+
+        tvSerieNumero.text = serie.numero.toString()
+        etKg.setText(serie.kg.toString())
+        etReps.setText(serie.repeticiones.toString())
+
+        // Eliminar cualquier color de fondo previo
+        ivCheck.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
+
+        var estaCompletada = false
+        ivCheck.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
+
+        ivCheck.setOnClickListener {
+            val kgText = etKg.text.toString()
+            val repsText = etReps.text.toString()
+
+            if (kgText.isBlank() || repsText.isBlank()) {
+                Toast.makeText(requireContext(), "Llena kg y reps de la serie ${serie.numero}", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val kg = kgText.toFloatOrNull()
+            val reps = repsText.toIntOrNull()
+
+            if (kg == null || reps == null) {
+                Toast.makeText(requireContext(), "Valores inválidos en serie ${serie.numero}", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (estaCompletada) {
+                // Desmarcar
+                ivCheck.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
+                estaCompletada = false
+                Toast.makeText(requireContext(), "Serie ${serie.numero} desmarcada ❌", Toast.LENGTH_SHORT).show()
+            } else {
+                // Marcar
+                ivCheck.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.greencheck))
+                estaCompletada = true
+                Toast.makeText(requireContext(), "Serie ${serie.numero} marcada como completada ✅", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        // Limpiar Handlers
-        handler?.removeCallbacksAndMessages(null)
-        countdownHandler?.removeCallbacksAndMessages(null)
+        // 👉 Agregamos swipe para eliminar
+        var xStart = 0f
+        val swipeThreshold = 200f  // distancia mínima
 
-        // Limpiar referencias
+        nuevaFila.setOnTouchListener { view, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    xStart = event.x
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val deltaX = event.x - xStart
+                    if (deltaX < 0) {
+                        layoutFilaSerie.translationX = deltaX * 0.6f  // mueve solo el layout
+                    }
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    val deltaX = event.x - xStart
+                    view.performClick()
+
+                    if (abs(deltaX) > swipeThreshold) {
+                        layoutFilaSerie.animate()
+                            .translationX(-layoutFilaSerie.width.toFloat())
+                            .setDuration(300)
+                            .withEndAction {
+                                binding.contenedorSeries.removeView(view)
+                                Toast.makeText(requireContext(), "Serie ${serie.numero} eliminada", Toast.LENGTH_SHORT).show()
+                            }
+                            .start()
+                    } else {
+                        layoutFilaSerie.animate()
+                            .translationX(0f)
+                            .setDuration(200)
+                            .start()
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+
+        binding.contenedorSeries.addView(nuevaFila)
+    }
+
+    // Funcion para agregar nueva serie en el boton de agregar serie
+    private fun addNewSerie(numero: Int) {
+        val nuevaFila = LayoutInflater.from(requireContext())
+            .inflate(R.layout.fila_serie, binding.contenedorSeries, false)
+
+        // Accedemos a las vistas internas
+        val layoutFilaSerie = nuevaFila.findViewById<LinearLayout>(R.id.layoutFilaSerie)
+        val tvSerieNumero = nuevaFila.findViewById<TextView>(R.id.tvSerieNumero)
+        val etKg = nuevaFila.findViewById<EditText>(R.id.etKg)
+        val etReps = nuevaFila.findViewById<EditText>(R.id.etReps)
+        val ivCheck = nuevaFila.findViewById<ImageView>(R.id.ivCheck)
+
+        tvSerieNumero.text = numero.toString()
+
+        // Creamos la serie inicialmente con completada = false
+        val nuevaSerie = Serie(
+            numero = numero,
+            nombreEjercicio = binding.tvNombreEjercicio.text.toString(),
+            kg = 0f, // valores iniciales (los pondrá después el usuario)
+            repeticiones = 0,
+            completada = false
+        )
+
+        // Agregamos la serie a la lista temporal
+        seriesTemporales.add(nuevaSerie)
+
+        // 👉 Creamos una variable local para alternar
+        var estaCompletada = false
+
+        ivCheck.setOnClickListener {
+            val kgText = etKg.text.toString()
+            val repsText = etReps.text.toString()
+
+            if (kgText.isBlank() || repsText.isBlank()) {
+                Toast.makeText(requireContext(), "Llena kg y reps de la serie $numero", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val kg = kgText.toFloatOrNull()
+            val reps = repsText.toIntOrNull()
+
+            if (kg == null || reps == null) {
+                Toast.makeText(requireContext(), "Valores inválidos en serie $numero", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val index = seriesTemporales.indexOfFirst { it.numero == numero }
+            if (index != -1) {
+                if (estaCompletada) {
+                    // Si ya estaba completada → desmarcamos
+                    ivCheck.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
+                    seriesTemporales[index] = seriesTemporales[index].copy(
+                        kg = kg,
+                        repeticiones = reps,
+                        completada = false
+                    )
+                    estaCompletada = false
+                    Toast.makeText(requireContext(), "Serie $numero desmarcada ❌", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Si no estaba completada → marcamos
+                    ivCheck.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.greencheck))
+                    seriesTemporales[index] = seriesTemporales[index].copy(
+                        kg = kg,
+                        repeticiones = reps,
+                        completada = true
+                    )
+                    estaCompletada = true
+                    Toast.makeText(requireContext(), "Serie $numero marcada como completada ✅", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // SWIPE para eliminar la fila
+        var xStart = 0f
+        val swipeThreshold = 200f  // distancia mínima
+
+        nuevaFila.setOnTouchListener { view, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    xStart = event.x
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val deltaX = event.x - xStart
+                    if (deltaX < 0) {
+                        layoutFilaSerie.translationX = deltaX * 0.6f // mueve SOLO el layout, no toda la fila
+                    }
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    val deltaX = event.x - xStart
+                    view.performClick()
+
+                    if (abs(deltaX) > swipeThreshold) {
+                        layoutFilaSerie.animate()
+                            .translationX(-layoutFilaSerie.width.toFloat())
+                            .setDuration(300)
+                            .withEndAction {
+                                binding.contenedorSeries.removeView(view)
+                                seriesTemporales.removeIf { it.numero == numero }
+                                Toast.makeText(requireContext(), "Serie $numero eliminada", Toast.LENGTH_SHORT).show()
+                            }
+                            .start()
+                    } else {
+                        layoutFilaSerie.animate()
+                            .translationX(0f)
+                            .setDuration(200)
+                            .start()
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+
+        binding.contenedorSeries.addView(nuevaFila)
+    }
+
+    private fun cancelTrainingAndClose() {
+        stopChronometer()
+        handler?.removeCallbacksAndMessages(null)
         handler = null
-        countdownHandler = null
-        countdownRunnable = null
+
+        seriesTemporales.clear()
+        binding.contenedorSeries.removeAllViews()
+
         timeElapsed = 0L
         startTime = 0L
 
-        // Limpiar datos de entrenamiento
-        seriesTemporales.clear()
-
-        // Resetear vistas
         binding.layoutDetalleEjercicio.isVisible = false
         binding.swipeContainer.isVisible = false
-        binding.etKg.text?.clear()
-        binding.etReps.text?.clear()
-        binding.tvTemporizador.text = getString(R.string.temporizador)
-        binding.tvDuracion.text = getString(R.string.cronometro)
 
-        // Opcional: resetear colores si quedaron marcados
-        binding.layoutFilaSerie.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray))
-        binding.ivCheck.setBackgroundColor(0)
-        binding.tvTemporizador.setTextColor(ContextCompat.getColor(requireContext(), R.color.bblue))
-
-        // Cerrar el modal
-        dismiss()
+        if (isAdded) dismiss()
     }
+
 
     private fun showFinishTrainingDialog() {
         if (seriesTemporales.isEmpty()) {
@@ -543,8 +720,7 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
                 Toast.makeText(requireContext(), "Sigue dándole 💪", Toast.LENGTH_SHORT).show()
             }
             .setPositiveButton("Terminar") { _, _ ->
-                finishTrainingAndSave()
-                Toast.makeText(requireContext(), "Entrenamiento terminado 🎯", Toast.LENGTH_SHORT).show()
+                showSaveTrainingDialog()
             }
             .create()
 
@@ -557,8 +733,47 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
             ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
     }
 
-    private fun finishTrainingAndSave() {
-        val nombreEntrenamiento = binding.tvTituloEntrenamiento.text.toString()
+    private fun showSaveTrainingDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle("💾 Guardar entrenamiento")
+            .setMessage("¿Quieres guardar tu entrenamiento antes de salir?")
+            .setCancelable(false)
+            .setNegativeButton("No guardar") { _, _ ->
+                cancelTrainingAndClose()
+                Toast.makeText(requireContext(), "Entrenamiento Finalizado 🎉", Toast.LENGTH_SHORT).show()
+            }
+            .setPositiveButton("Guardar") { _, _ ->
+                val prefs = requireContext().getSharedPreferences("usuario", Context.MODE_PRIVATE)
+                val emailUsuario = prefs.getString("correo", "") ?: ""
+
+                if (emailUsuario.isBlank()) {
+                    Toast.makeText(requireContext(), "No se detectó usuario activo", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                val db = AppDatabase.getDatabase(requireContext())
+                lifecycleScope.launch {
+                    val user = db.userDao().obtenerUsuarioPorCorreo(emailUsuario)
+                    if (user != null) {
+                        finishTrainingAndSave(user.email)
+                        Toast.makeText(requireContext(), "Entrenamiento guardado 🎯", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Error: usuario no encontrado", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .create()
+
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.greencheck))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+    }
+
+    private fun finishTrainingAndSave(email: String) {
+        val nombreEntrenamiento = binding.etTituloEntrenamiento.text.toString()
 
         if (seriesTemporales.isEmpty()) {
             Toast.makeText(requireContext(), "No hay series para guardar", Toast.LENGTH_SHORT).show()
@@ -570,19 +785,29 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
             series = seriesTemporales.toMutableList()
         )
 
-        // Aquí puedes guardar en base de datos, enviar a servidor, o loguear:
-        // entrenamientoRepository.save(entrenamiento)
-        println("Entrenamiento guardado: $entrenamiento")
+        // Serializar a JSON usando Gson
+        val gson = Gson()
+        val entrenamientoJson = gson.toJson(entrenamiento)
 
-        // Limpiar todo
-        seriesTemporales.clear()
-        countdownHandler?.removeCallbacksAndMessages(null)
-        handler?.removeCallbacksAndMessages(null)
-        isCountdownRunning = false
-        running = false
+        val savedTrain = SavedTrain(
+            email = email,
+            entrenamientoJson = entrenamientoJson,
+        )
 
-        // Cerrar modal
-        dismiss()
+        val db = AppDatabase.getDatabase(requireContext())
+        val savedTrainDao = db.savedTrainDao()
+
+        lifecycleScope.launch {
+            savedTrainDao.insert(savedTrain)
+
+            // Notificar al fragmento padre
+            parentFragmentManager.setFragmentResult("saved_training", Bundle())
+
+            // Limpiar
+            seriesTemporales.clear()
+
+            dismiss()
+        }
     }
 
     override fun onDestroyView() {

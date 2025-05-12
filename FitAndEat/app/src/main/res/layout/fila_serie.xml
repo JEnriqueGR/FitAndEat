@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp">
+
+    <!-- Fondo rojo de borrar -->
+    <TextView
+        android:id="@+id/tvBorrarFila"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|end"
+        android:paddingEnd="32dp"
+        android:background="@android:color/holo_red_light"
+        android:text="Borrar"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <!-- Layout deslizable encima -->
+    <LinearLayout
+        android:id="@+id/layoutFilaSerie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#D3D3D3"
+        android:padding="4dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvSerieNumero"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/etKg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="numberDecimal"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:background="@android:color/transparent" />
+
+        <EditText
+            android:id="@+id/etReps"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:background="@android:color/transparent" />
+
+        <ImageView
+            android:id="@+id/ivCheck"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_check"
+            android:padding="4dp"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+</FrameLayout>
+

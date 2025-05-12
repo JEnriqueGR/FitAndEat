@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,7 +62,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Dependencies added
-    implementation("androidx.appcompat:appcompat:1.6.1") // Appcompat
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation(libs.androidx.appcompat.v161)
     implementation("androidx.room:room-runtime:2.6.1") // Room
@@ -70,16 +70,12 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0") // Material Components
     implementation("androidx.fragment:fragment-ktx:1.8.6") // Fragments
 
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
-
     implementation("com.google.firebase:firebase-auth:22.3.1") // Firebase (UserFragment)
 
     implementation(libs.mpandroidchart) // MPAndroidChart (StatsFragment)
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
-    implementation ("com.google.android.material:material:1.11.0") // o la versión más reciente
-
+    implementation("com.google.code.gson:gson:2.8.9")
 
 }
 
