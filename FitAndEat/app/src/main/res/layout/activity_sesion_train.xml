@@ -42,7 +42,7 @@
 
         <EditText
             android:id="@+id/etPeso"
-            android:hint="Peso levantado (kg/lb)"
+            android:hint="Peso levantado (kg)"
             android:inputType="numberDecimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

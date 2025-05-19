@@ -55,19 +55,24 @@
 
         <EditText
             android:id="@+id/etPeso"
-            android:hint="Ingresa tu peso"
+            android:hint="Ingresa tu peso (kg)"
             android:inputType="numberDecimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/etSexo"
-            android:hint="Ingresa tu sexo"
-            android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            android:hint="Selecciona tu sexo"
+            android:inputType="none"
+            android:focusable="false"
+            android:dropDownHeight="wrap_content"
+            android:padding="12dp"
+        />
+
 
         <Button
             android:id="@+id/btnGuardarInfo"

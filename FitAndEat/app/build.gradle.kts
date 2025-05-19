@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.compose) // Plugin requerido para Compose en Kotlin 2.0
     kotlin("kapt")
 }
 
@@ -28,21 +28,27 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         viewBinding = true
         compose = true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3" // Asegúrate de que coincida con tu BOM
+    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -60,26 +66,23 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Dependencies added
-    implementation("androidx.appcompat:appcompat:1.6.1") // Appcompat
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation(libs.androidx.appcompat.v161)
-    implementation("androidx.room:room-runtime:2.6.1") // Room
-    kapt("androidx.room:room-compiler:2.6.1") // Room
-    implementation("androidx.room:room-ktx:2.6.1") // Coroutine
-    implementation("com.google.android.material:material:1.12.0") // Material Components
-    implementation("androidx.fragment:fragment-ktx:1.8.6") // Fragments
+    // Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    // Material Components
+    implementation("com.google.android.material:material:1.12.0")
 
-    implementation("com.google.firebase:firebase-auth:22.3.1") // Firebase (UserFragment)
+    // Fragment
+    implementation("androidx.fragment:fragment-ktx:1.8.6")
 
-    implementation(libs.mpandroidchart) // MPAndroidChart (StatsFragment)
+    // Firebase Auth
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+
+    // MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
-    implementation ("com.google.android.material:material:1.11.0") // o la versión más reciente
-
-
+    // GSON
+    implementation("com.google.code.gson:gson:2.8.9")
 }
-

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nestedScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E6E6"
+    android:paddingBottom="24dp"
+    android:focusableInTouchMode="true"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Handle -->
+        <View
+            android:id="@+id/handle"
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/handle_background" />
+
+        <!-- Botón terminar -->
+        <Button
+            android:id="@+id/btnTerminar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="TERMINAR"
+            android:backgroundTint="#00C853"
+            android:textColor="#FFFFFF"
+            android:layout_margin="16dp" />
+
+        <!-- Título -->
+        <EditText
+            android:id="@+id/etTituloEntrenamiento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="Entrenamiento por la mañana"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:focusable="false"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:layout_marginStart="16dp" />
+
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/tvFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="28 abr 2025"
+            android:textColor="#545454"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Duración -->
+        <TextView
+            android:id="@+id/tvDuracion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="0:00"
+            android:textColor="#838383"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Swipe container con fondo borrar -->
+        <FrameLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <!-- Fondo rojo de borrar -->
+            <TextView
+                android:id="@+id/tvBorrar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|end"
+                android:paddingEnd="32dp"
+                android:background="@android:color/holo_red_light"
+                android:text="Borrar"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+
+            <!-- Contenido deslizable del ejercicio -->
+            <LinearLayout
+                android:id="@+id/layoutDetalleEjercicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#E6E6E6"
+                android:elevation="4dp"
+                android:padding="12dp" />
+        </FrameLayout>
+
+        <!-- Botón añadir ejercicios -->
+        <Button
+            android:id="@+id/btnAnEjercicio"
+            android:layout_gravity="center"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:text="Añadir ejercicios"
+            android:backgroundTint="#2962FF"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp" />
+
+        <!-- Botón cancelar entrenamiento -->
+        <Button
+            android:id="@+id/btnCancelarEntrenamiento"
+            android:layout_gravity="center"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:text="Cancelar Rutina"
+            android:backgroundTint="#D32F2F"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

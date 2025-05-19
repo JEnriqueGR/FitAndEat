@@ -44,4 +44,13 @@
         <item name="android:textColor">@color/textColor</item>
     </style>
 
+    <style name="MyActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="titleTextStyle">@style/MyActionBarTitleText</item>
+    </style>
+
+    <style name="MyActionBarTitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
 </resources>

@@ -1,255 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/entrenamientoLayout"
+    android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E6E6E6"
-    android:paddingBottom="24dp">
+    android:paddingBottom="24dp"
+    android:focusableInTouchMode="true"
+    android:clickable="true" >
 
-    <!-- Handle (rayita) -->
-    <View
-        android:id="@+id/handle"
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/handle_background"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Botón terminar -->
-    <Button
-        android:id="@+id/btnTerminar"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TERMINAR"
-        android:backgroundTint="#00C853"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/handle"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- Título -->
-    <TextView
-        android:id="@+id/tvTituloEntrenamiento"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Entrenamiento por la mañana"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/btnTerminar"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp" />
+        <!-- Handle (rayita) -->
+        <View
+            android:id="@+id/handle"
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/handle_background" />
 
-    <!-- Fecha -->
-    <TextView
-        android:id="@+id/tvFecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="28 abr 2025"
-        android:textColor="#545454"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/tvTituloEntrenamiento"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp" />
+        <!-- Botón terminar -->
+        <Button
+            android:id="@+id/btnTerminar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="TERMINAR"
+            android:backgroundTint="#00C853"
+            android:textColor="#FFFFFF"
+            android:layout_margin="16dp" />
 
-    <!-- Duración -->
-    <TextView
-        android:id="@+id/tvDuracion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0:00"
-        android:textColor="#838383"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/tvFecha"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp" />
-
-    <!-- SECCIÓN DESLIZABLE CON FONDO BORRAR -->
-    <FrameLayout
-        android:id="@+id/swipeContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvDuracion"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Fondo rojo de borrar -->
-        <TextView
-            android:id="@+id/tvBorrar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center|end"
-            android:paddingEnd="32dp"
-            android:background="@android:color/holo_red_light"
-            android:text="Borrar"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="18sp" />
-
-        <!-- Layout deslizable encima -->
-        <LinearLayout
-            android:id="@+id/layoutDetalleEjercicio"
+        <!-- Título -->
+        <EditText
+            android:id="@+id/etTituloEntrenamiento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#E6E6E6"
-            android:elevation="4dp"
-            android:padding="12dp">
+            android:gravity="start"
+            android:text="Entrenamiento por la mañana"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:focusable="false"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:layout_marginStart="16dp" />
 
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/tvFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="28 abr 2025"
+            android:textColor="#545454"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Duracion -->
+        <TextView
+            android:id="@+id/tvDuracion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="0:00"
+            android:textColor="#838383"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- SECCIÓN DESLIZABLE CON FONDO BORRAR -->
+        <FrameLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <!-- Fondo rojo de borrar -->
             <TextView
-                android:id="@+id/tvNombreEjercicio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Arnold Press (Dumbbell)"
-                android:textSize="18sp"
+                android:id="@+id/tvBorrar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|end"
+                android:paddingEnd="32dp"
+                android:background="@android:color/holo_red_light"
+                android:text="Borrar"
+                android:textColor="@android:color/white"
                 android:textStyle="bold"
-                android:textColor="#2962FF" />
+                android:textSize="18sp" />
 
-            <!-- Encabezados -->
+            <!-- Layout deslizable encima -->
             <LinearLayout
+                android:id="@+id/layoutDetalleEjercicio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:orientation="vertical"
+                android:background="#E6E6E6"
+                android:elevation="4dp"
+                android:padding="12dp">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:id="@+id/tvNombreEjercicio"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Serie"
-                    android:textColor="@color/black" />
+                    android:text="Arnold Press (Dumbbell)"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2962FF" />
 
-                <TextView
-                    android:layout_width="0dp"
+                <!-- Encabezados -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="kg"
-                    android:textColor="@color/black" />
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Rep."
-                    android:textColor="@color/black" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Serie"
+                        android:textColor="@color/black" />
 
-                <TextView
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="kg"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Rep."
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:gravity="center"
+                        android:text="✔"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- 📌 Contenedor dinámico -->
+                <LinearLayout
+                    android:id="@+id/contenedorSeries"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:text="✔"
-                    android:textColor="@color/black" />
+                    android:orientation="vertical"
+                    android:layout_marginTop="4dp" />
+
+                <Button
+                    android:id="@+id/btnAddSerie"
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:text="+ Añadir serie"
+                    android:backgroundTint="#4B4B4B"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
+        </FrameLayout>
 
-            <!-- Fila de datos -->
-            <LinearLayout
-                android:id="@+id/layoutFilaSerie"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp"
-                android:background="#D3D3D3"
-                android:padding="4dp"
-                android:gravity="center_vertical">
+        <!-- Botón añadir ejercicios -->
+        <Button
+            android:id="@+id/btnAnEjercicio"
+            android:layout_gravity="center"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:text="Añadir ejercicio"
+            android:backgroundTint="#2962FF"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp" />
 
-                <TextView
-                    android:id="@+id/tvSerieNumero"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="1"
-                    android:textColor="@color/black"
-                    android:gravity="center"
-                    android:textSize="16sp" />
+        <!-- Botón cancelar entrenamiento -->
+        <Button
+            android:id="@+id/btnCancelarEntrenamiento"
+            android:layout_gravity="center"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:text="Cancelar entrenamiento"
+            android:backgroundTint="#D32F2F"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp" />
 
-                <EditText
-                    android:id="@+id/etKg"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:inputType="numberDecimal"
-                    android:gravity="center"
-                    android:textSize="16sp"
-                    android:background="@android:color/transparent" />
-
-                <EditText
-                    android:id="@+id/etReps"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:inputType="number"
-                    android:gravity="center"
-                    android:textSize="16sp"
-                    android:background="@android:color/transparent" />
-
-                <ImageView
-                    android:id="@+id/ivCheck"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:src="@drawable/ic_check"
-                    android:padding="4dp"
-                    android:layout_gravity="center" />
-            </LinearLayout>
-
-            <!-- Temporizador -->
-            <TextView
-                android:id="@+id/tvTemporizador"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="2:00"
-                android:gravity="center"
-                android:textColor="#2962FF"
-                android:textSize="18sp"
-                android:layout_marginTop="8dp" />
-
-            <Button
-                android:id="@+id/btnAñadirSerie"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="+ Añadir serie (2:00)"
-                android:backgroundTint="#4B4B4B"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="8dp" />
-        </LinearLayout>
-    </FrameLayout>
-
-    <!-- Botón añadir ejercicios -->
-    <Button
-        android:id="@+id/btnAnEjercicio"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Añadir ejercicio"
-        android:backgroundTint="#2962FF"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/swipeContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp" />
-
-    <!-- Botón cancelar entrenamiento -->
-    <Button
-        android:id="@+id/btnCancelarEntrenamiento"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Cancelar entrenamiento"
-        android:backgroundTint="#D32F2F"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/btnAnEjercicio"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

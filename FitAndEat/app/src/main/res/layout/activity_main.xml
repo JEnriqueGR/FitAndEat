@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:background="#4E7EFF"
         android:elevation="4dp"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
          />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

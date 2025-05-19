@@ -9,77 +9,78 @@
 
     <!-- Botón "X" en la parte superior izquierda -->
     <ImageButton
-    android:id="@+id/btnClose"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:src="@drawable/ic_x"
-    android:background="?attr/selectableItemBackground"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    android:layout_marginTop="22dp"
-    android:layout_marginStart="28dp" />
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_x"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="22dp"
+        android:layout_marginStart="28dp" />
 
     <!-- Botón "Añadir" en la parte superior derecha -->
     <Button
-    android:id="@+id/btnAddExercise"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Añadir"
-    android:backgroundTint="#2962FF"
-    android:textColor="#FFFFFF"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="16dp" />
+        android:id="@+id/btnAddExercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Añadir"
+        android:backgroundTint="#2962FF"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp" />
 
     <!-- Fila horizontal: Barra de búsqueda + Filtro -->
     <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toBottomOf="@id/btnClose"
-    android:layout_marginTop="16dp"
-    android:layout_marginLeft="18dp"
-    android:layout_marginRight="16dp">
-
-    <!-- Barra de búsqueda -->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="Buscar"
-        android:iconifiedByDefault="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/spMuscleFilter"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        app:layout_constraintTop_toBottomOf="@id/btnClose"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="16dp">
+
+        <!-- Barra de búsqueda -->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:queryHint="Buscar"
+            android:iconifiedByDefault="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/spMuscleFilter"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
 
         <!-- Spinner para seleccionar el grupo muscular -->
-    <Spinner
-        android:id="@+id/spMuscleFilter"
-        android:layout_width="145dp"
-        android:layout_height="46dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/searchView"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Spinner
+            android:id="@+id/spMuscleFilter"
+            android:layout_width="145dp"
+            android:layout_height="46dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/searchView"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- RecyclerView para mostrar la lista de ejercicios -->
     <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rvEjercicios"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_margin="16dp"
-    app:layout_constraintTop_toBottomOf="@id/spMuscleFilter"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:scrollbars="vertical"
-    android:layout_marginTop="16dp"
-    app:layout_constraintHeight_percent="0.8"/> <!-- Establece el 83% de la altura disponible -->
+        android:id="@+id/rvEjercicios"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/spMuscleFilter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:scrollbars="vertical"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHeight_percent="0.8"
+        tools:ignore="NotSibling" /> <!-- Establece el 83% de la altura disponible -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

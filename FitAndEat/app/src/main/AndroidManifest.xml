@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="Fit&amp;Eat"
+        android:textColor="@color/white"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FitAndEat"
@@ -19,20 +19,17 @@
             android:theme="@style/Theme.FitAndEat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".MainActivity" />
-        <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".StatsActivity" />
-        <activity android:name=".CompleteProfileActivity" />
-        <activity android:name=".UserGoalActivity" />
-        <activity android:name=".NewSessionTrainActivity" />
-        <activity android:name=".ExerciseDetailActivity" />
-        <activity android:name=".FoodActivity" />
-        <activity android:name=".AddFoodActivity" />
+        <activity android:name=".account.CreateAccountActivity" />
+        <activity android:name=".stats.StatsActivity" />
+        <activity android:name=".account.CompleteProfileActivity" />
+        <activity android:name=".account.UserGoalActivity" />
+        <activity android:name=".exercise.NewSessionTrainActivity" />
+        <activity android:name=".exercise.ExerciseDetailActivity" />
+        <activity android:name=".food.FoodActivity" />
+        <activity android:name=".food.AddFoodActivity" />
     </application>
-
 </manifest>

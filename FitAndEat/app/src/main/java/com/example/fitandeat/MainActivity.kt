@@ -6,6 +6,12 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.example.fitandeat.exercise.ExercisesFragment
+import com.example.fitandeat.exercise.RoutineFragment
+import com.example.fitandeat.food.FoodFragment
+import com.example.fitandeat.stats.StatsFragment
+import com.example.fitandeat.timer.TimerFragment
+import com.example.fitandeat.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
