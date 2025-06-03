@@ -1,6 +1,5 @@
 package com.example.fitandeat.exercise.adapter
 
-import com.example.fitandeat.R
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fitandeat.R
 import com.example.fitandeat.exercise.RutinaBottomSheet
 import com.example.fitandeat.exercise.dao.SavedRoutineDao
 import com.example.fitandeat.exercise.model.Rutina

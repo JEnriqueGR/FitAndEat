@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 class UserGoalActivity : AppCompatActivity() {
 
     private lateinit var btnPerderGrasa: Button

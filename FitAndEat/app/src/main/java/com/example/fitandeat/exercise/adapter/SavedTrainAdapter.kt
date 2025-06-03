@@ -41,7 +41,7 @@ class SavedTrainAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrainingViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item_saved_routine_card, parent, false)
+            .inflate(R.layout.layout_item_saved_training_card, parent, false)
         return TrainingViewHolder(view)
     }
 

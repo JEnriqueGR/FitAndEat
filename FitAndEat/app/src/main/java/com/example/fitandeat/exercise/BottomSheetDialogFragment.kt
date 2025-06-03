@@ -29,6 +29,7 @@ import com.example.fitandeat.databinding.FragmentTrainingModalBinding
 import com.example.fitandeat.exercise.model.Entrenamiento
 import com.example.fitandeat.exercise.model.SavedTrain
 import com.example.fitandeat.exercise.model.Serie
+import com.example.fitandeat.exercise.model.SesionTrain
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -801,9 +802,22 @@ class EntrenamientoBottomSheet : BottomSheetDialogFragment() {
 
         val db = AppDatabase.getDatabase(requireContext())
         val savedTrainDao = db.savedTrainDao()
+        val sessionDao = db.sessionTrainDao()
 
         lifecycleScope.launch {
             savedTrainDao.insert(savedTrain)
+
+            // 👉 Insertar también en la tabla de sesiones
+            seriesTemporales.forEach { serie ->
+                val sesion = SesionTrain(
+                    email = email,
+                    ejercicio = serie.nombreEjercicio,
+                    series = 1,
+                    repeticiones = serie.repeticiones,
+                    peso = serie.kg
+                )
+                sessionDao.insertarSesion(sesion)
+            }
 
             // Notificar al fragmento padre
             parentFragmentManager.setFragmentResult("saved_training", Bundle())
